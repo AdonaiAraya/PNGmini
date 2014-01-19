@@ -1,4 +1,3 @@
-PNGmini
-=======
+#PNGmini
 
-A python desktop programm to compress PNG images using http://www.tinypng.com API
+A python desktop application to compress PNG images using <a href="http://tinypng.com" target="_blank">http://tinypng.com</a> API
