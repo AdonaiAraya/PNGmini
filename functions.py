@@ -171,18 +171,19 @@ def comprimir( app ):
             app.errorFiles.append(fileInfo)
 
 def selectItem( event, app ):
-    index_item_seleccionado = int(event.widget.curselection()[0])
-    usuario_seleccionado = app.users[index_item_seleccionado]
-    app.entry_correo.delete( 0, END )
-    app.entry_correo.insert( 0, usuario_seleccionado["email"] )
-    app.entry_clave.delete( 0, END )
-    app.entry_clave.insert( 0, usuario_seleccionado["key"] )
-    if usuario_seleccionado["current"]:
-        app.checkbox_current.select()
-        app.setCurrent = True
-    else:
-        app.checkbox_current.deselect()
-        app.setCurrent = False
+    if len(event.widget.curselection()) > 0:
+        index_item_seleccionado = int(event.widget.curselection()[0])
+        usuario_seleccionado = app.users[index_item_seleccionado]
+        app.entry_correo.delete( 0, END )
+        app.entry_correo.insert( 0, usuario_seleccionado["email"] )
+        app.entry_clave.delete( 0, END )
+        app.entry_clave.insert( 0, usuario_seleccionado["key"] )
+        if usuario_seleccionado["current"]:
+            app.checkbox_current.select()
+            app.setCurrent = True
+        else:
+            app.checkbox_current.deselect()
+            app.setCurrent = False
 
 def checkSetCurrent( app ):
     """
