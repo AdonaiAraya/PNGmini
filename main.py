@@ -7,6 +7,7 @@ if __name__ == "__main__":
     mainWindow.title("PNGmini")
     mainWindow.resizable(0, 0)
     mainWindow.geometry("425x350")
+    mainWindow.iconbitmap( "PNGmini_logo128x128.ico" )
     mainWindow.config(
         background = "#ffffff",
         width = 425,
