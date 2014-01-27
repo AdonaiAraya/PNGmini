@@ -6,12 +6,12 @@ if __name__ == "__main__":
     mainWindow = Tk()
     mainWindow.title("PNGmini")
     mainWindow.resizable(0, 0)
-    mainWindow.geometry("425x350")
+    mainWindow.geometry("425x410")
     mainWindow.iconbitmap( "PNGmini_logo128x128.ico" )
     mainWindow.config(
         background = "#ffffff",
         width = 425,
-        height = 350
+        height = 410
     )
     #Aplicacion
     app = App( mainWindow )

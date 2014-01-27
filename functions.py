@@ -39,15 +39,58 @@ def changeFileLabel( app ):
     app.infoSelectFiles.config( text = txt )
     app.notifications.hide()
 
+def elegirDestino( app ):
+    """
+    Selecciona la carpeta de destino de los ficheros
+    """
+    app.directory = askdirectory(
+        parent = app.root,
+        initialdir = os.path.expanduser('~'),
+        title = "Seleccione la carpeta de destino para los ficheros comprimidos."
+    )
+    changeFolderDestinationLabel( app )
+
+def changeFolderDestinationLabel( app ):
+    """
+    Cambia el texto de la información de la carpeta de destino
+    """
+    txt = ""
+    if len( app.directory ) and not app.replaceFiles:
+        txt = app.directory
+    elif app.replaceFiles:
+        txt = "El destino corresponderá a cada fichero."
+    else:
+        txt = "No se ha seleccionado ningún destino."
+    app.infoDestinationFolder.config( text = txt )
+
 def checkReplaceFiles( app ):
     """
     Cambia el estado de la variable para reemplazar los ficheros comprimidos
     """
     app.replaceFiles = not app.replaceFiles
     if app.replaceFiles:
-        app.inputNewName.config( state = "disabled" )
+        app.inputNewName.config( state = DISABLED )
+        app.destinationFolder.config( state = DISABLED )
+        app.keep_name = True
+        app.checkbox_keepName.select()
+        app.checkbox_keepName.config( state = DISABLED )
     else:
-        app.inputNewName.config( state = "normal" )
+        app.inputNewName.config( state = NORMAL )
+        app.destinationFolder.config( state = NORMAL )
+        app.keep_name = False
+        app.checkbox_keepName.deselect()
+        app.checkbox_keepName.config( state = ACTIVE )
+    changeFolderDestinationLabel( app )
+
+def checkKeepName( app ):
+    """
+    Cambia el estado de la variable para conservar el nombre
+    """
+    app.keep_name = not app.keep_name
+    if app.keep_name:
+        app.inputNewName.config( state = DISABLED )
+    elif not app.replaceFiles and not app.keep_name:
+        app.inputNewName.config( state = NORMAL )
 
 def comprimirArchivos( app ):
     """
@@ -63,9 +106,8 @@ def comprimirArchivos( app ):
         if len(app.files) == 0:
             app.notifications.showError( "No se han seleccionado archivos." )
         else:
-            if not app.inputNewName.get().strip() and not app.replaceFiles:
+            if not app.inputNewName.get().strip() and not app.replaceFiles and not app.keep_name:
                 app.notifications.showError( "El campo de texto no puede estar vacio." )
-                pass
             else:
                 app.standByApp()
                 app.pbComprimidos.show()
@@ -107,11 +149,25 @@ def comprimir( app ):
     Comprime los ficheros llamando a la API de tiny PNG
     """
     counter = 1
-    newName = app.inputNewName.get()
     for file in app.files:
         extension = os.path.splitext(os.path.basename(file))[1]
         if extension.lower() == ".png":
-            newPath =  os.path.dirname(file) + "/" + newName + "_" + str(counter) + extension
+            newName = ""
+            if app.keep_name:
+                newName = os.path.splitext(os.path.basename(file))[0]
+            else:
+                newName = app.inputNewName.get()
+            dir = ""
+            if len( app.directory ):
+                dir = app.directory
+            else:
+                dir = os.path.dirname(file)
+            newPath = ""
+            if app.keep_name:
+                newPath = dir + "/" + newName + extension
+                counter = 0
+            else:
+                newPath = dir + "/" + newName + "_" + str(counter) + extension
             while os.path.isfile(newPath):
                 counter += 1
                 newPath =  os.path.dirname(file) + "/" + newName + "_" + str(counter) + extension

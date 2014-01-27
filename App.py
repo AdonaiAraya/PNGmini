@@ -6,11 +6,13 @@ class App( Frame ):
     key = None
     root = ""
     replaceFiles = False
+    keep_name = False
     setCurrent = False
     files = []
     successFiles = []
     errorFiles = []
     users = []
+    directory = ""
 
     def __init__( self, mainWindow ):
         self.root = mainWindow
@@ -30,8 +32,10 @@ class App( Frame ):
         #Panel - App
         self.compressFiles.config( state = DISABLED )
         self.selectFiles.config( state = DISABLED )
+        self.destinationFolder.config( state = DISABLED )
         self.inputNewName.config( state = DISABLED )
         self.replaceChoice.config( state = DISABLED )
+        self.checkbox_keepName.config( state = DISABLED )
         self.resume.hide()
         #Panel - KeyManager
         self.entry_clave.config( state = DISABLED )
@@ -49,16 +53,22 @@ class App( Frame ):
         self.files = []
         self.successFiles = []
         self.errorFiles = []
+        self.directory = ""
         self.compressFiles.config( state = NORMAL )
         self.selectFiles.config( state = NORMAL )
+        self.destinationFolder.config( state = NORMAL )
         self.inputNewName.config( state = NORMAL )
         self.inputNewName.delete( 0, END )
         self.replaceChoice.config( state = ACTIVE )
         self.replaceChoice.deselect()
+        self.checkbox_keepName.config( state = ACTIVE )
+        self.checkbox_keepName.deselect()
         self.replaceFiles = False
+        self.keep_name = False
         self.pbComprimidos.hide()
         self.notifications.hide()
         changeFileLabel( self )
+        changeFolderDestinationLabel( self )
         #Panel - KeyManager
         self.keyList.deleteList()
         self.keyList.config( state = NORMAL )
@@ -120,6 +130,29 @@ class App( Frame ):
             foreground = "#363636"
         )
 
+        #Boton selección de carpeta de destino
+        self.destinationFolder = Button(
+            self.root,
+            text = "Carpeta de destino",
+            background = "#92a8cc",
+            activebackground = "#fafafa",
+            foreground = "#fafafa",
+            activeforeground = "#92a8cc",
+            cursor = "hand2",
+            border = 0,
+            padx = 8,
+            pady = 8,
+            command = lambda : elegirDestino( self )
+        )
+
+        #Label información de la carpeta de destino
+        self.infoDestinationFolder = Label(
+            self.root,
+            text = "No se ha seleccionado ningún destino.",
+            background = "#ffffff",
+            foreground = "#363636"
+        )
+
         #Entry Input para el nuevo nombre
         self.inputNewName = Entry(
             self.root,
@@ -151,6 +184,22 @@ class App( Frame ):
             command = lambda : checkReplaceFiles( self )
         )
 
+        #Checkbox Para elegir conservar el nombre de los ficheros o renombrarlos
+        self.checkbox_keepName = Checkbutton(
+            self.root,
+            background = "#ffffff",
+            activebackground = "#ffffff",
+            foreground = "#363636",
+            activeforeground = "#363636",
+            borderwidth = 0,
+            highlightthickness = 0,
+            cursor = "hand2",
+            offvalue = False,
+            onvalue = True,
+            text = "Conservar nombre de los ficheros",
+            command = lambda : checkKeepName( self )
+        )
+
         #Boton comprimir archivos
         self.compressFiles = Button(
             self.root,
@@ -171,9 +220,6 @@ class App( Frame ):
 
         #Label notificaciones
         self.notifications = Notification( self.root )
-        self.notifications.place( x = 25, y = 230 )
-        self.notifications.savePlaceData()
-        self.notifications.hide()
 
         #Label Resume
         self.resume = Resume( self.root )
@@ -264,19 +310,25 @@ class App( Frame ):
         self.key_notifications = Notification( self.root )
 
     def panelApp(self):
-        self.selectFiles.place( x = 25, y = 25 )
+        self.selectFiles.place( x = 25, y = 25, width = 140 )
         self.infoSelectFiles.place( x = 180, y = 30 )
-        self.inputNewName.place( x = 180, y = 85, width = 200 )
-        self.infoInputNewName.place( x = 25, y = 85 )
-        self.replaceChoice.place( x = 25, y = 135 )
-        self.compressFiles.place( x = 25, y = 185 )
+        self.destinationFolder.place( x = 25, y = 85, width = 140 )
+        self.infoDestinationFolder.place( x = 180, y = 90 )
+        self.inputNewName.place( x = 180, y = 145, width = 200 )
+        self.infoInputNewName.place( x = 25, y = 145 )
+        self.replaceChoice.place( x = 25, y = 195 )
+        self.checkbox_keepName.place( x = 180, y = 195 )
+        self.compressFiles.place( x = 25, y = 240, width = 140 )
         self.importantNotifications.place( x = 0, y = 0, width = 425 )
         self.importantNotifications.savePlaceData()
         self.importantNotifications.hide()
-        self.resume.place( x = 25, y = 230 )
+        self.notifications.place( x = 25, y = 290 )
+        self.notifications.savePlaceData()
+        self.notifications.hide()
+        self.resume.place( x = 25, y = 290 )
         self.resume.savePlaceData()
         self.resume.hide()
-        self.pbComprimidos.place( x = 25, y = 280, width = 375 )
+        self.pbComprimidos.place( x = 25, y = 330, width = 375 )
         self.pbComprimidos.savePlaceData()
         self.pbComprimidos.hide()
 
@@ -292,8 +344,8 @@ class App( Frame ):
         self.label_clave.place( x = 25, y = 190 )
         self.entry_clave.place( x = 100, y = 190, width = 300 )
         self.checkbox_current.place( x = 25, y = 230 )
-        self.button_add_edit.place( x = 25, y = 270 )
-        self.button_delete.place( x = 305, y = 270 )
+        self.button_add_edit.place( x = 25, y = 270, width = 140 )
+        self.button_delete.place( x = 260, y = 270, width = 140 )
         self.key_notifications.place( x = 25, y = 310 )
         self.key_notifications.savePlaceData()
         self.key_notifications.hide()
@@ -311,9 +363,12 @@ class App( Frame ):
     def hidePanelApp(self):
         self.selectFiles.place_forget()
         self.infoSelectFiles.place_forget()
+        self.destinationFolder.place_forget()
+        self.infoDestinationFolder.place_forget()
         self.inputNewName.place_forget()
         self.infoInputNewName.place_forget()
         self.replaceChoice.place_forget()
+        self.checkbox_keepName.place_forget()
         self.compressFiles.place_forget()
         self.importantNotifications.place_forget()
         self.resume.hide()
