@@ -1,14 +1,4 @@
 {
     "users": [
-        {
-            "current": true, 
-            "email": "adoargu@gmail.com", 
-            "key": "fUUnJ2QJr_QT4usdCtMgLimYJBE_N8kR"
-        }, 
-        {
-            "current": false, 
-            "email": "lalala", 
-            "key": "4523"
-        }
     ]
 }
