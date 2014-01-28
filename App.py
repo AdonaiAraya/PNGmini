@@ -27,8 +27,9 @@ class App( Frame ):
 
     def standByApp(self):
         #Panel - Menu
-        self.mainMenu.entryconfig(0, state = DISABLED )
-        self.mainMenu.entryconfig(1, state = DISABLED )
+        self.mainMenu.entryconfig( 0, state = DISABLED )
+        self.mainMenu.entryconfig( 1, state = DISABLED )
+        self.mainMenu.entryconfig( 2, state = DISABLED )
         #Panel - App
         self.compressFiles.config( state = DISABLED )
         self.selectFiles.config( state = DISABLED )
@@ -44,11 +45,13 @@ class App( Frame ):
         self.keyList.config( state = DISABLED )
         self.button_delete.config( state = DISABLED )
         self.button_add_edit.config( state = DISABLED )
+        #Panel - Help
 
     def resetApp(self):
         #Panel - Menu
-        self.mainMenu.entryconfig(0, state = NORMAL )
-        self.mainMenu.entryconfig(1, state = NORMAL )
+        self.mainMenu.entryconfig( 0, state = NORMAL )
+        self.mainMenu.entryconfig( 1, state = NORMAL )
+        self.mainMenu.entryconfig( 2, state = NORMAL )
         #Panel - App
         self.files = []
         self.successFiles = []
@@ -81,6 +84,7 @@ class App( Frame ):
         self.button_delete.config( state = NORMAL )
         self.button_add_edit.config( state = NORMAL )
         self.key_notifications.hide()
+        #Panel - Help
 
     def createInterface(self):
         #Menu
@@ -104,6 +108,12 @@ class App( Frame ):
             activebackground = "#fafafa",
             activeforeground = "#92a8cc",
             command = lambda : self.showPanelKeyManager()
+        )
+        self.mainMenu.add_command(
+            label = "Ayuda",
+            activebackground = "#fafafa",
+            activeforeground = "#92a8cc",
+            command = lambda : self.showPanelHelp()
         )
         self.root.config( menu = self.mainMenu )
 
@@ -309,6 +319,24 @@ class App( Frame ):
         #Label KeyNotification
         self.key_notifications = Notification( self.root )
 
+        #Label Help text-1
+        self.label_helpText1 = Label(
+            self.root,
+            text = "Las instrucciones de uso de aplicación se encuentran en:",
+            background = "#ffffff",
+            foreground = "#363636"
+        )
+
+        #Label Help link
+        self.label_link = Label(
+            self.root,
+            text = "https://github.com/AdonaiAraya/PNGmini/wiki",
+            cursor = "hand2",
+            background = "#ffffff",
+            foreground = "#92a8cc"
+        )
+        self.label_link.bind( "<Button-1>", lambda event : linkTo( "https://github.com/AdonaiAraya/PNGmini/wiki" ) )
+
     def panelApp(self):
         self.selectFiles.place( x = 25, y = 25, width = 140 )
         self.infoSelectFiles.place( x = 180, y = 30 )
@@ -350,15 +378,27 @@ class App( Frame ):
         self.key_notifications.savePlaceData()
         self.key_notifications.hide()
 
+    def panelHelp(self):
+        self.label_helpText1.place( x = 25, y = 25 )
+        self.label_link.place( x = 25, y = 50 )
+
     def showPanelApp(self):
         self.resetApp()
         self.hidePanelKeyManager()
+        self.hidePanelHelp()
         self.panelApp()
 
     def showPanelKeyManager(self):
         self.resetApp()
         self.hidePanelApp()
+        self.hidePanelHelp()
         self.panelKeyManager()
+
+    def showPanelHelp(self):
+        self.resetApp()
+        self.hidePanelApp()
+        self.hidePanelKeyManager()
+        self.panelHelp()
 
     def hidePanelApp(self):
         self.selectFiles.place_forget()
@@ -384,4 +424,6 @@ class App( Frame ):
         self.button_add_edit.place_forget()
         self.button_delete.place_forget()
 
-
+    def hidePanelHelp(self):
+        self.label_helpText1.place_forget()
+        self.label_link.place_forget()

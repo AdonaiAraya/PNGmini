@@ -8,6 +8,10 @@ import json
 import sys
 from KeyHandler import KeyHandler
 from tkinter import messagebox
+import webbrowser
+
+def linkTo( link ):
+    webbrowser.open_new_tab( link )
 
 def elegirFicheros( app ):
     """
