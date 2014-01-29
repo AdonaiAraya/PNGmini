@@ -129,6 +129,7 @@ class App( Frame ):
             border = 0,
             padx = 8,
             pady = 8,
+            font = AppFont(),
             command = lambda : elegirFicheros( self )
         )
 
@@ -137,7 +138,8 @@ class App( Frame ):
             self.root,
             text = "No se ha seleccionado ningún fichero.",
             background = "#ffffff",
-            foreground = "#363636"
+            foreground = "#363636",
+            font = AppFont()
         )
 
         #Boton selección de carpeta de destino
@@ -152,6 +154,7 @@ class App( Frame ):
             border = 0,
             padx = 8,
             pady = 8,
+            font = AppFont(),
             command = lambda : elegirDestino( self )
         )
 
@@ -160,7 +163,8 @@ class App( Frame ):
             self.root,
             text = "No se ha seleccionado ningún destino.",
             background = "#ffffff",
-            foreground = "#363636"
+            foreground = "#363636",
+            font = AppFont()
         )
 
         #Entry Input para el nuevo nombre
@@ -175,7 +179,8 @@ class App( Frame ):
             self.root,
             text = "Escoja el nuevo nombre:",
             background = "#ffffff",
-            foreground = "#363636"
+            foreground = "#363636",
+            font = AppFont()
         )
 
         #Checkbox Para elegir si reemplazar los archivos o crear nuevos
@@ -191,6 +196,7 @@ class App( Frame ):
             offvalue = False,
             onvalue = True,
             text = "Reemplazar archivos",
+            font = AppFont(),
             command = lambda : checkReplaceFiles( self )
         )
 
@@ -207,6 +213,7 @@ class App( Frame ):
             offvalue = False,
             onvalue = True,
             text = "Conservar nombre de los ficheros",
+            font = AppFont(),
             command = lambda : checkKeepName( self )
         )
 
@@ -222,6 +229,7 @@ class App( Frame ):
             border = 0,
             padx = 8,
             pady = 8,
+            font = AppFont(),
             command = lambda : comprimirArchivos( self )
         )
 
@@ -246,7 +254,8 @@ class App( Frame ):
             self.root,
             text = "Email: ",
             background = "#ffffff",
-            foreground = "#363636"
+            foreground = "#363636",
+            font = AppFont()
         )
 
         #Entry Correo
@@ -261,7 +270,8 @@ class App( Frame ):
             self.root,
             text = "Clave: ",
             background = "#ffffff",
-            foreground = "#363636"
+            foreground = "#363636",
+            font = AppFont()
         )
 
         #Entry Clave
@@ -284,6 +294,7 @@ class App( Frame ):
             offvalue = False,
             onvalue = True,
             text = "Usar esta clave para comprimir ficheros.",
+            font = AppFont(),
             command = lambda : checkSetCurrent( self )
         )
         #Button Añadir / Editar
@@ -298,6 +309,7 @@ class App( Frame ):
             border = 0,
             padx = 8,
             pady = 8,
+            font = AppFont(),
             command = lambda : addEditUser( self, self.entry_correo.get(), self.entry_clave.get(), self.setCurrent )
         )
 
@@ -313,18 +325,59 @@ class App( Frame ):
             border = 0,
             padx = 8,
             pady = 8,
+            font = AppFont(),
             command = lambda : deleteUser( self, self.entry_correo.get() )
         )
 
         #Label KeyNotification
         self.key_notifications = Notification( self.root )
 
+        #Label Help image-1
+        self.PNGmini_logo_ayuda = PhotoImage( file = "PNGmini_logo_ayuda.gif" )
+        self.image_help = Label(
+            self.root,
+            image = self.PNGmini_logo_ayuda,
+            background = "#ffffff"
+        )
+
+        #Label Help titulo
+        self.label_helpTitle = Label(
+            self.root,
+            text = "PNGmini",
+            background = "#ffffff",
+            foreground = "#92a8cc",
+            font = AppFont( size = 28 )
+        )
+
+        #Separator Help
+        self.separator_sep = ttk.Separator(
+            self.root,
+            orient = HORIZONTAL
+        )
+
+        #Label Help about
+        self.label_about = Label(
+            self.root,
+            text = "Autor: Adonai Araya Gutiérrez\nVersión: 0.5 (Beta)\nCopyright \u00A9 2014",
+            background = "#ffffff",
+            foreground = "#363636",
+            justify = LEFT,
+            font = AppFont()
+        )
+
+        #Separator Help
+        self.separator_sep2 = ttk.Separator(
+            self.root,
+            orient = HORIZONTAL
+        )
+
         #Label Help text-1
         self.label_helpText1 = Label(
             self.root,
             text = "Las instrucciones de uso de aplicación se encuentran en:",
             background = "#ffffff",
-            foreground = "#363636"
+            foreground = "#363636",
+            font = AppFont()
         )
 
         #Label Help link
@@ -333,7 +386,8 @@ class App( Frame ):
             text = "https://github.com/AdonaiAraya/PNGmini/wiki",
             cursor = "hand2",
             background = "#ffffff",
-            foreground = "#92a8cc"
+            foreground = "#92a8cc",
+            font = AppFont( underline = True )
         )
         self.label_link.bind( "<Button-1>", lambda event : linkTo( "https://github.com/AdonaiAraya/PNGmini/wiki" ) )
 
@@ -379,8 +433,13 @@ class App( Frame ):
         self.key_notifications.hide()
 
     def panelHelp(self):
-        self.label_helpText1.place( x = 25, y = 25 )
-        self.label_link.place( x = 25, y = 50 )
+        self.label_helpTitle.place( x = 170, y = 35 )
+        self.image_help.place( x = 70, y = 25 )
+        self.separator_sep.place( x = 25, y = 120, width = 375 )
+        self.label_about.place( x = 25, y = 150 )
+        self.separator_sep2.place( x = 25, y = 230, width = 375 )
+        self.label_helpText1.place( x = 25, y = 260 )
+        self.label_link.place( x = 25, y = 285 )
 
     def showPanelApp(self):
         self.resetApp()
@@ -425,5 +484,10 @@ class App( Frame ):
         self.button_delete.place_forget()
 
     def hidePanelHelp(self):
+        self.label_helpTitle.place_forget()
+        self.image_help.place_forget()
+        self.separator_sep.place_forget()
+        self.label_about.place_forget()
+        self.separator_sep2.place_forget()
         self.label_helpText1.place_forget()
         self.label_link.place_forget()

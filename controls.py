@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-from tkinter import Label, Listbox, Scrollbar
+from tkinter import Label, Listbox, Scrollbar, font
 from tkinter import ttk
 from tkinter import END
+
+#Font
+class AppFont( font.Font ):
+    def __init__(self, family = "Verdana", size = 8, weight = "normal", slant = "roman", underline = False):
+        font.Font.__init__( self, family = family, size = size, weight = weight, slant = slant, underline = underline )
 
 #Progress Bar
 class PB( ttk.Progressbar ):
@@ -43,7 +48,7 @@ class LB( Listbox ):
 #Notifications
 class Notification( Label ):
     def __init__(self, parent):
-        Label.__init__(self, parent, background = "#ffffff" )
+        Label.__init__(self, parent, background = "#ffffff", font = AppFont() )
     def showError(self, text):
         self.config(
             text = text,
@@ -64,7 +69,7 @@ class Notification( Label ):
 #Important notification
 class ImportantNotification( Label ):
     def __init__(self, parent):
-        Label.__init__(self, parent, background = "#ff0000", foreground = "#ffffff", justify = "center" )
+        Label.__init__(self, parent, background = "#ff0000", foreground = "#ffffff", justify = "center", font = AppFont() )
     def show(self, text):
         self.config(
             text = text
@@ -79,7 +84,7 @@ class ImportantNotification( Label ):
 #Resume
 class Resume( Label ):
     def __init__(self, parent):
-        Label.__init__(self, parent, background = "#ffffff", foreground = "#363636", justify = "left" )
+        Label.__init__(self, parent, background = "#ffffff", foreground = "#363636", justify = "left", font = AppFont() )
     def show(self):
         self.place( self.placeData )
     def hide(self):
