@@ -333,7 +333,7 @@ class App( Frame ):
         self.key_notifications = Notification( self.root )
 
         #Label Help image-1
-        self.PNGmini_logo_ayuda = PhotoImage( file = "PNGmini_logo_ayuda.gif" )
+        self.PNGmini_logo_ayuda = PhotoImage( file = find_file_path("PNGmini_logo_ayuda.gif") )
         self.image_help = Label(
             self.root,
             image = self.PNGmini_logo_ayuda,

@@ -10,6 +10,14 @@ from KeyHandler import KeyHandler
 from tkinter import messagebox
 import webbrowser
 
+def find_file_path( filename ):
+    if getattr(sys, 'frozen', False):
+        datadir = os.path.dirname(sys.executable)
+    else:
+        datadir = os.path.dirname(os.path.realpath(__file__))
+
+    return os.path.join(datadir, filename)
+
 def linkTo( link ):
     webbrowser.open_new_tab( link )
 
